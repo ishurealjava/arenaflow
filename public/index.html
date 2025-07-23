@@ -16,94 +16,120 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> 
 
 <script>
-  $(document).ready(function() {
-  $("#signupForm").submit(function(event) {
-    event.preventDefault();
+  $(document).ready(function () {
+    // Password live validation
+    $("#txtPwd").on("input", function () {
+      let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+      let pwd = $(this).val();
 
-    let email = $("#txtEmail").val();
-    let password = $("#txtPwd").val();
-    let userType = $("#utype").val();
-
-    let obj = {
-      type: "POST",
-      url: "/signup",
-      data: {
-        txtEmail: email,
-        txtPwd: password,
-        utype: userType
+      if (regex.test(pwd)) {
+        $("#lblPwd").html("Password is strong ").removeClass("text-danger").addClass("text-success");
+      } else {
+        $("#lblPwd").html("Weak Password ").removeClass("text-success").addClass("text-danger");
       }
-    };
+    });
 
+    // Signup form validation + submission
+    $("#signupForm").submit(function (event) {
+      event.preventDefault();
 
-      $.ajax(obj).then(function(response){
-        alert(response); 
-      }).fail(function(err){
-        alert("Error: " + err.responseText); 
+      let email = $("#txtEmail").val();
+      let password = $("#txtPwd").val();
+      let userType = $("#utype").val();
+
+      let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      let pwdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+      if (!emailRegex.test(email)) {
+        $("#errMsgE").html("Invalid Email ").addClass("text-danger").removeClass("text-success");
+        return;
+      }
+
+      if (!pwdRegex.test(password)) {
+        $("#lblPwd").html("Weak Password ").addClass("text-danger").removeClass("text-success");
+        return;
+      }
+
+      let obj = {
+        type: "POST",
+        url: "/signup",
+        data: {
+          txtEmail: email,
+          txtPwd: password,
+          utype: userType
+        }
+      };
+
+      $.ajax(obj).then(function (response) {
+        alert(response);
+      }).fail(function (err) {
+        alert("Error: " + err.responseText);
       });
     });
-     $("#txtEmail").blur(function () {
-  let obj = {
-    type: "get",
-    url: "/chk-email",
-    data: {
-      txtEmail: $("#txtEmail").val() 
-    }
-  };
+$("#txtEmail").on("input", function () {
+  let email = $(this).val();
+  let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  $.ajax(obj).then(function (response) {
-    $("#emailStatus").html(response);
-  }).fail(function (err) {
-    alert("Blur error: " + err.message); 
-  });
-  });
+  if (!emailRegex.test(email)) {
+    $("#errMsgE")
+      .html(" Invalid format. Use: name@example.com")
+      .removeClass("text-success")
+      .addClass("text-danger");
+  } else {
+    $("#errMsgE")
+      .html(" Valid email format")
+      .removeClass("text-danger")
+      .addClass("text-success");
+  }
 });
+    // Email check on blur
+    $("#txtEmail").blur(function () {
+      let obj = {
+        type: "get",
+        url: "/chk-email",
+        data: {
+          txtEmail: $("#txtEmail").val()
+        }
+      };
+
+      $.ajax(obj).then(function (response) {
+        $("#emailStatus").html(response);
+      }).fail(function (err) {
+        alert("Blur error: " + (err.responseText || err.statusText));
+      });
+    });
+
+    // Login logic
+    $("#btnFetchWithAJAX").click(function () {
+      let loginEmail = $("#loginEmail").val();
+      let loginPwd = $("#loginPwd").val();
+
+      let obj = {
+        type: "get",
+        url: "/do-login",
+        data: {
+          loginEmail: loginEmail,
+          loginPwd: loginPwd
+        }
+      };
+
+      $.ajax(obj).then(function (response) {
+        if (response == "Blocked") {
+          alert("Sorry!! Your ID is Blocked");
+        } else if (response == "Invalid") {
+          alert("Invalid Email ID or Password");
+        } else {
+          localStorage.setItem("activeUser", loginEmail);
+          if (response == "player") location.href = "dash-player.html";
+          else if (response == "organizer") location.href = "org-dash.html";
+          else if (response == "Admin") location.href = "admin-dash.html";
+        }
+      }).fail(function (err) {
+        alert("Error: " + (err.responseText || err.statusText));
+      });
+    });
+  });
 </script>
-
-<script>
-$(document).ready(function(){
-  $("#btnFetchWithAJAX").click(function(){
-  
-
-    let loginEmail = $("#loginEmail").val();
-let loginPwd = $("#loginPwd").val();
-    let obj = {
-      type: "get",
-      url: "/do-login",
-      data: {
-        loginEmail: loginEmail,
-        loginPwd: loginPwd
-      }
-    };
-
-    $.ajax(obj).then(function(response) {
-  if (response=="Blocked")
-  alert("Sorry!!Your ID is Blocked");
-    else if(response=="Invalid")
-    alert("Invalid Emailid or Password");
-    else 
-    if(response=="player")
-    {  
-      localStorage.setItem("activeUser",loginEmail);
-        location.href="dash-player.html";
-    }
-      else if(response=="organizer")
-       {  
-      localStorage.setItem("activeUser",loginEmail);
-      location.href="org-dash.html";
-       }
-    else if(response=="Admin")
-     {  
-      localStorage.setItem("activeUser",loginEmail);
-    location.href="admin-dash.html";
-     }
-}).fail(function(err) {
-    alert("Error: " + err.message);
-});
-  });
- })
- 
-
- </script> 
  
  
   
@@ -129,12 +155,17 @@ let loginPwd = $("#loginPwd").val();
     <div class="mb-3">
       <label for="txtEmail" class="form-label">Email address</label>
       <input type="text" class="form-control" id="txtEmail" name="txtEmail" aria-describedby="emailHelp" required>
-      <span id="emailStatus" class="form-text"></span>
+     <div id="errMsgE" class="form-text text-muted">
+  Must be a valid format like name@example.com using letters, digits, ".", "_", "-", or "+" before "@", with a proper domain suffix.
+</div>
     </div>
     <div class="mb-3">
-      <label for="txtPwd" class="form-label">Password</label>
-      <input type="password" class="form-control" id="txtPwd" name="txtPwd" required>
-      </div>
+  <label for="txtPwd" class="form-label">Password</label>
+  <input type="password" class="form-control" id="txtPwd" name="txtPwd" required>
+  <div id="lblPwd" class="form-text text-muted">
+    Must be at least 8 characters and include uppercase, lowercase letters, and a digit.
+  </div>
+</div>
    <div class="mb-3">
   <label for="userType" class="form-label">USER TYPE</label>
   <select id="utype" name="utype" class="form-control" required>
