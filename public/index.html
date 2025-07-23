@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"/>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-pH6hODig79uPVU1P3yc6Ak2anoxNxbqvHxQh9jT8UBnEknZHoZ2ND5MgxDYOdxrT" crossorigin="anonymous"></script> -->
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> 
+
+<script>
+  $(document).ready(function() {
+  $("#signupForm").submit(function(event) {
+    event.preventDefault();
+
+    let email = $("#txtEmail").val();
+    let password = $("#txtPwd").val();
+    let userType = $("#utype").val();
+
+    let obj = {
+      type: "POST",
+      url: "/signup",
+      data: {
+        txtEmail: email,
+        txtPwd: password,
+        utype: userType
+      }
+    };
+
+
+      $.ajax(obj).then(function(response){
+        alert(response); 
+      }).fail(function(err){
+        alert("Error: " + err.responseText); 
+      });
+    });
+     $("#txtEmail").blur(function () {
+  let obj = {
+    type: "get",
+    url: "/chk-email",
+    data: {
+      txtEmail: $("#txtEmail").val() 
+    }
+  };
+
+  $.ajax(obj).then(function (response) {
+    $("#emailStatus").html(response);
+  }).fail(function (err) {
+    alert("Blur error: " + err.message); 
+  });
+  });
+});
+</script>
+
+<script>
+$(document).ready(function(){
+  $("#btnFetchWithAJAX").click(function(){
+  
+
+    let loginEmail = $("#loginEmail").val();
+let loginPwd = $("#loginPwd").val();
+    let obj = {
+      type: "get",
+      url: "/do-login",
+      data: {
+        loginEmail: loginEmail,
+        loginPwd: loginPwd
+      }
+    };
+
+    $.ajax(obj).then(function(response) {
+  if (response=="Blocked")
+  alert("Sorry!!Your ID is Blocked");
+    else if(response=="Invalid")
+    alert("Invalid Emailid or Password");
+    else 
+    if(response=="player")
+    {  
+      localStorage.setItem("activeUser",loginEmail);
+        location.href="dash-player.html";
+    }
+      else if(response=="organizer")
+       {  
+      localStorage.setItem("activeUser",loginEmail);
+      location.href="org-dash.html";
+       }
+    else if(response=="Admin")
+     {  
+      localStorage.setItem("activeUser",loginEmail);
+    location.href="admin-dash.html";
+     }
+}).fail(function(err) {
+    alert("Error: " + err.message);
+});
+  });
+ })
+ 
+
+ </script> 
+ 
+ 
+  
+</head>
+<body>
+<!-- <input type="button" class="btn btn-danger" value="Signup" data-bs-toggle="modal" data-bs-target="#divSignup">
+    <input type="button" class="btn btn-danger" value="Login" data-bs-toggle="modal" data-bs-target="#divLogin"> -->
+   <!-- <a href="org-dash.html" class="btn btn-danger"> Org-Dash</a> -->
+   <!-- <a href="dash-player.html" class="btn btn-danger"> Player-Dash</a> -->
+   <!-- <a href="admin-dash.html" class="btn btn-danger"> Admin-Dash</a> -->
+    
+</center>
+<!-- signup modal -->
+ <div class="modal fade" tabindex="-1" id="divSignup">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Signup Here</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+<form id="signupForm">
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="txtEmail" class="form-label">Email address</label>
+      <input type="text" class="form-control" id="txtEmail" name="txtEmail" aria-describedby="emailHelp" required>
+      <span id="emailStatus" class="form-text"></span>
+    </div>
+    <div class="mb-3">
+      <label for="txtPwd" class="form-label">Password</label>
+      <input type="password" class="form-control" id="txtPwd" name="txtPwd" required>
+      </div>
+   <div class="mb-3">
+  <label for="userType" class="form-label">USER TYPE</label>
+  <select id="utype" name="utype" class="form-control" required>
+    <option value="none">Select</option>
+    <option value="player">PLAYER</option>
+    <option value="organizer">ORGANIZER</option>
+  </select>
+  </div>
+  </div>
+  <div class="modal-footer">
+          <input type="submit" class="btn btn-primary" value="Signup" >
+        </div>
+  </form>
+</div>
+</div>
+</div>
+<!-- login modal -->
+
+<div class="modal fade" tabindex="-1" id="divLogin">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="loginForm">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Login Here</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="loginEmail" class="form-label">Email address</label>
+            <input type="text" class="form-control" id="loginEmail" name="loginEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="loginPwd" class="form-label">Password</label>
+            <input type="password" class="form-control" id="loginPwd" name="loginPwd" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btnFetchWithAJAX" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  
+  <nav class="navbar navbar-expand-md" style="background-color: #172554; padding: 10px 0;">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+        <img src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Arena Logo" width="40" height="40" class="me-2 img-fluid">
+        <span class="navbar-brand text-white fw-bold fs-4 mb-0">ARENA FLOW</span>
+      </div>
+
+      <button class="navbar-toggler" style="background-color: white;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarButtons" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarButtons">
+        <div class="d-flex flex-column flex-md-row gap-2 mt-2 mt-md-0">
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#divSignup">Signup</button>
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#divLogin">Login</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  
+  <div class="min-vh-100 d-flex flex-column justify-content-center align-items-center text-white text-center px-4" style="background: linear-gradient(to right, #1e3a8a, #811118);">
+    <h1 class="fw-bold mb-3 display-4">Compete. Connect. Conquer.</h1>
+    <p style="max-width: 700px; font-size: 1.2rem; line-height: 1.6;">
+      Your one-stop shop for tournament registration and management.<br>Organizers post events. Players join tournaments. Track everything—live and simple.
+    </p>
+    <a href="#services" class="btn btn-danger mt-4 px-5 py-3 fs-5 shadow-lg">Get Started</a>
+
+<!--     
+    <div class="d-flex flex-wrap justify-content-center gap-3 mt-5 px-3" style="max-width: 95vw;">
+      <img src="pics/WhatsApp Image 2025-07-23 at 00.03.57_3746364c.jpg" class="rounded shadow img-fluid" style="width: 150px;" alt="Athlete in action 1">
+      <img src="pics/WhatsApp Image 2025-07-23 at 00.02.12_89ed9c23.jpg" class="rounded shadow img-fluid" style="width: 150px;" alt="Athlete in action 2">
+      <img src="pics/WhatsApp Image 2025-07-23 at 00.00.57_290e9f57.jpg" class="rounded shadow img-fluid" style="width: 150px;" alt="Athlete in action 3">
+    </div>
+  </div> -->
+  <div class="container my-3">
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3 justify-content-center">
+    <div class="col">
+      <img src="pics/WhatsApp Image 2025-07-23 at 00.03.57_3746364c.jpg" class="img-fluid rounded shadow" alt="Image 1">
+    </div>
+    <div class="col">
+      <img src="pics/WhatsApp Image 2025-07-23 at 00.02.12_89ed9c23.jpg" class="img-fluid rounded shadow" alt="Image 2">
+    </div>
+    <div class="col">
+      <img src="pics/WhatsApp Image 2025-07-23 at 00.00.57_290e9f57.jpg" class="img-fluid rounded shadow" alt="Image 3">
+    </div>
+  </div>
+</div>
+<div class="my-5">
+
+  
+  <section class="py-5" style="background: linear-gradient(to right, #1e3a8a, #172554);" id="services">
+
+    <div class="container text-center">
+      <h2 class="mb-3 fw-bold" style="color: #e11d48; font-family: 'Franklin Gothic Medium', Arial; font-size: 2.5rem;">
+        Our Services
+      </h2>
+      <p class="mb-5 fs-5 text-white">
+        Tools built for athletes, organizers, and fans—simple, smart, and powerful.
+      </p>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+      
+        <div class="col">
+          <div class="card h-100 border-0 rounded shadow-sm text-center" style="background: rgba(255,255,255,0.95);">
+            <div class="card-body py-4">
+              <div class="mb-3">
+                <img src="pics/tournamentss.jpg" alt="Tournament management" class="img-fluid" width="200">
+              </div>
+              <h5 class="card-title text-danger">Tournaments</h5>
+              <p class="card-text text-dark">Streamline your tournament operations with our comprehensive management platform. From registration to results, our intuitive tools help you organize and execute successful events.
+</p>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="col">
+          <div class="card h-100 border-0 rounded shadow-sm text-center" style="background: rgba(255,255,255,0.95);">
+            <div class="card-body py-4">
+              <div class="mb-3">
+                <img src="pics/organizrr.jpg" alt="Organizer tools" class="img-fluid" width="200">
+              </div>
+              <h5 class="card-title text-danger">Organizers</h5>
+              <p class="card-text text-dark">We're dedicated to creating an unparalleled experience for athletes, teams, and organizers alike. From tournament management to team coordination, our platform streamlines the entire process, ensuring a seamless and enjoyable experience for all participants.
+</p>
+            </div>
+          </div>
+        </div>
+
+       
+        <div class="col">
+          <div class="card h-100 border-0 rounded shadow-sm text-center" style="background: rgba(255,255,255,0.95);">
+            <div class="card-body py-4">
+              <div class="mb-3">
+                <img src="pics/athletee.jpg" alt="Athletes profile" class="img-fluid" width="250">
+              </div>
+              <h5 class="card-title text-danger">Players</h5>
+              <p class="card-text text-dark">Get ready to compete and have a blast! Our tournament platform is designed to provide a seamless and enjoyable experience for players like you.
+
+</p>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="col">
+          <div class="card h-100 border-0 rounded shadow-sm text-center" style="background: rgba(255,255,255,0.95);">
+            <div class="card-body py-4">
+              <div class="mb-3">
+                <img src="pics/business-avatar-profile-black-icon-man-of-user-symbol-in-trendy-flat-style-isolated-on-male-profile-people-diverse-face-for-social-network-or-web-vector.jpg" alt="Admin dashboard icon" class="img-fluid" width="200">
+              </div>
+              <h5 class="card-title text-danger">Admin Panel</h5>
+              <p class="card-text text-dark"> Full control over the platform, enabling efficient management and a great user experience.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+<section class="py-5 text-white" style="background: linear-gradient(to right, #1e3a8a, #172554);" id="mission">
+  <div class="container">
+    <div class="row align-items-center gx-5">
+
+      
+      <div class="col-12 col-md-6">
+        <div class="card bg-transparent text-white text-center border-0">
+          <div class="card-body px-4 py-4">
+            <h2 class="fw-bold mb-4" style="color: #e11d48; font-family:'Franklin Gothic Medium', Arial; font-size: 2.5rem;">
+              Our Mission
+            </h2>
+            <h5 class="mb-4" style="color: #ffffff; font-size: 1.4rem; font-weight: 600;">
+              "Empowering Sports Communities Through Seamless Tournament Management"
+            </h5>
+            <p class="fs-5" style="max-width: 800px; margin: 0 auto; line-height: 1.8; color: #f1f5f9;">
+              Our mission is to provide a user-friendly and efficient platform for organizing and participating in sports tournaments, fostering a sense of community and competition among athletes, teams, and organizers.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="col-12 col-md-6">
+        <div class="card bg-transparent text-center border-0">
+          <div class="card-body px-4 py-4">
+            <img src="pics/am.jpg" alt="Athletes in motion"
+                 class="img-fluid rounded"
+                 style="max-width: 100%;">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="py-5 text-white" style="background-color:#962d34 ;" id="developers">
+  <div class="container text-center mb-5">
+    <h2 class="fw-bold mb-3" style="font-size: 2.5rem; font-family: 'Franklin Gothic Medium', Arial, sans-serif;">
+      Meet the Developers
+    </h2>
+    <p class="fs-5" style="color: #e2e8f0;">
+      The brilliant minds behind Arena Flow
+    </p>
+  </div>
+
+  <div class="container">
+    <div class="row row-cols-1 row-cols-md-2 g-5 justify-content-center">
+
+      
+<div class="col">
+  <div class="card h-100 bg-transparent border-light text-white text-center">
+    <div class="card-body">
+
+      
+      <picture>
+        <img src="pics/sir.jpg" alt="Mr. Rajesh Bansal"
+
+             class="shadow mb-3"
+             style="width: 160px; height: auto; object-fit: cover; border: 2px solid #e11d1d00;">
+      </picture>
+
+     <h5 class="text-uppercase mb-2" style="color: #ffffff;">Under the Guidance Of</h5>
+      <h4 class="fw-bold mb-1">Mr. Rajesh Bansal, BCE</h4>
+      <p class="mb-2" style="color: #f1f5f9;">Project Mentor & Guide</p>
+      <p class="mb-1">📧 Email: bcebti@gmail.com</p>
+      <p>📱 Mobile: 98722-460561</p>
+
+    </div>
+  </div>
+</div>
+
+     
+      <div class="col">
+        <div class="card h-100 bg-transparent border-light text-white text-center">
+          <div class="card-body">
+             <h5 class="text-uppercase mb-2" style="color: #ffffff;">Developed By</h5>
+            <h4 class="fw-bold mb-1">Ishu</h4>
+            <p class="mb-1">📧 Email: ishushukla5523@gmail.com</p>
+            
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="py-5 text-white" style="background-color: #06226f;" id="contact">
+  <div class="container">
+    <div class="row align-items-start gx-5">
+
+      
+      <div class="col-12 col-md-6 mb-4 mb-md-0">
+        <h3 class="fw-bold mb-3" style="font-size: 1.8rem;">Reach Us</h3>
+        <p class="mb-2">📧 Email: ishushukla5523@gamil.com</p>
+        <p class="mb-4">📍 Location: Jaitu, Faridkot, Punjab, 151202</p>
+      </div>
+
+      
+      <div class="col-12 col-md-6">
+        <h4 class="fw-semibold mb-3">Find Us Here</h4>
+        <div class="ratio ratio-4x3 rounded shadow">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3439.419041225706!2d74.89045707536147!3d30.45256697472066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39174b0051b403ab%3A0x71c21fcb4686522f!2sJaitu%2C%20Faridkot!5e0!3m2!1sen!2sin!4v1753243562190!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-3 text-center text-white" style="background-color: #172554;">
+  <div class="container">
+    <small>© 2025 Arena Flow</small>
+    <div class="mt-2">
+      <a href="#services" class="text-decoration-none text-white mx-2">About</a>
+      <a href="#services" class="text-decoration-none text-white mx-2">Terms of Service</a>
+      <a href="#developers" class="text-decoration-none text-white mx-2">Contact</a>
+    </div>
+  </div>
+</footer>
+</div>
+</body>
+
+</html>
+
+
+       

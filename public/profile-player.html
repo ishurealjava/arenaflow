@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+       
+        <script>
+        function showPrev(fileRef, prevRef) {
+            const [file] = fileRef.files
+            if (file) {
+                prevRef.src = URL.createObjectURL(file)
+            }
+        }
+
+    </script>
+    
+      <script>
+      let formTargetUrl = "/player";
+
+$(document).ready(function () {
+  // Switch form target based on button
+  $("#sendBtnPlayer").click(function () {
+    formTargetUrl = "/player";
+  });
+
+  $("#modifyBtnPlayer").click(function () {
+    formTargetUrl = "/update-player";
+  });
+
+  $("#playerForm").submit(function (event) {
+    event.preventDefault();
+
+    const formData = new FormData($("#playerForm")[0]);
+
+    $.ajax({
+      type: "POST",
+      url: formTargetUrl,
+      data: formData,
+      contentType: false,
+      processData: false
+    })
+    .then(function (responseJsonAry) {
+      alert(responseJsonAry.message || "Saved Successfully");
+
+      // Image preview logic
+      const picurl = responseJsonAry.picurl;
+      $("#prev").prop("src", picurl);
+      $("#hdn").val(picurl);
+
+      // AI-based auto-fill from Aadhar
+      if (responseJsonAry.name || responseJsonAry.dob || responseJsonAry.gender) {
+        $("#name").val(responseJsonAry.name);
+        $("#dob").val(responseJsonAry.dob);
+        $("#gender").val(responseJsonAry.gender);
+      }
+    })
+    .fail(function (err) {
+      alert("Error: " + (err.responseText || err.message));
+    });
+  });
+});
+</script>
+<script>
+  $(document).ready(function () {
+  $("#btnGet").click(function (event) {
+    event.preventDefault();
+
+   const email = $("#emailid").val(); 
+  if (!email) return alert(" Please enter an email to search");
+
+
+    $.get("/get-player", { emailid: email })
+      .then(function (responseAry) {
+        const org = responseAry[0];
+        
+
+        $("#emailid").val(org.email);                
+        $("#name").val(org.name);                     
+        $("#dob").val(org.dob);                        
+        $("#gender").val(org.gender);                  
+        $("#Address").val(org.address);              
+        $("#contact").val(org.contact);          
+        $("#game").val(org.game);                    
+        $("#otherinfo").val(org.otherinfo);               
+        $("#prevAadhar").prop("src", org.acardpicurl);      
+        $("#prevProfile").prop("src", org.profilepicurl);
+        $("#hdn").val(org.profilepicurl);       
+      })
+      .fail(function (err) {
+        alert("Error: " + (err.responseText || err.message));
+      });
+  });
+});
+</script>
+<script>
+      function showUser()
+      {
+        let activeUser=localStorage.getItem("activeUser");
+        document.getElementById("emailid").value=activeUser;
+      }
+    </script>
+</head>
+<body onload="showUser();">
+    <div class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2">
+  <img src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Arena Logo" width="40" height="40" class="me-2">
+  <span class="fw-bold fs-5">ARENA FLOW</span>
+</div>
+        </div>
+        <div class="container mt-4">
+        <div class="row ">
+            <div class="col-md-8 offset-md-2 bg-danger text-white" >
+                <center><h2>PLAYER PROFILE</h2></center>
+            </div>
+        </div>
+         <div class="col-md-8 offset-md-2">
+            <form class="row g-3" id="playerForm" enctype="multipart/form-data" method="post">
+        <input type="hidden" id="hdn" name="hdn">
+        <input type="hidden" name="actionType" id="actionType">
+       <div class="col-md-6">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control " name="emailid" id="emailid" readonly />
+        </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-20" id="btnGet">Get Data</button>
+        </div>
+        <div class="col-md-6">
+  <label for="acardpicurl" class="form-label">Aadhar Card</label>
+  <input type="file" name="acardpicurl" id="acardpicurl" onchange="showPrev(this, document.getElementById('prevAadhar'))">
+  <img src="pics/istockphoto-1147544807-612x612.jpg" width="100" height="100" id="prevAadhar" alt="">
+</div>
+
+<div class="col-md-6">
+  <label for="profilepicurl" class="form-label">Profile Pic</label>
+  <input type="file" name="profilepicurl" id="profilepicurl" onchange="showPrev(this, document.getElementById('prevProfile'))">
+  <img src="pics/istockphoto-1147544807-612x612.jpg" width="100" height="100" id="prevProfile" alt="">
+</div>
+        <div class="col-md-4">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" name="name"id="name"  readonly/>
+        </div>
+         <div class="col-md-4">
+          <label for="dob" class="form-label">Date of Birth</label>
+          <input type="text" class="form-control" name="dob"id="dob"  readonly/>
+        </div>
+          <div class="col-md-4">
+          <label for="gender" class="form-label">Gender</label>
+          <input type="text" class="form-control" name="gender"id="gender" readonly/>
+        </div>
+        <div class="col-md-6">
+          <label for="Address" class="form-label">Address</label>
+          <input
+            type="text"
+            class="form-control"
+            id="Address"
+            name="Address"
+
+          />
+        </div>
+         <div class="col-md-6">
+          <label for="contact" class="form-label">Contact Person</label>
+          <input type="text" class="form-control" name="contact"id="contact" />
+        </div>
+        <div class="col-md-12">
+          <label for="game" class="form-label">Games You Play</label>
+          <input type="text" class="form-control" name="game"id="game" />
+         
+          </div>
+          <div class="col-md-12">
+  <label for="otherinfo" class="form-label">Other Info</label>
+  <textarea class="form-control" name="otherinfo" id="otherinfo" rows="4"></textarea>
+</div>
+<div class="col-6">
+  <button type="submit" class="btn btn-primary" id="sendBtnPlayer" value="send">Upload Data</button>
+</div>
+
+<!-- Modify Button -->
+<div class="col-6">
+  <button type="submit" class="btn btn-primary" id="modifyBtnPlayer" value="modify">Modify</button>
+</div>
+</form>
+</div>
+</div>     
+</body>
+</html>

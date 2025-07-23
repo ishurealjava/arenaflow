@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"/>
+      <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+      crossorigin="anonymous"
+    ></script>
+    
+      <script>
+      function showUser()
+      {
+        let activeUser=localStorage.getItem("activeUser");
+        document.getElementById("welcome").innerHTML=activeUser;
+      }
+    </script>
+    
+<script>
+     function doLogout(){
+        localStorage.removeItem("activeUser");
+        location.href="index.html";
+      }
+      </script>
+</head>
+<body onload="showUser();">
+   <div class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2">
+  
+  <img src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Arena Logo" width="40" height="40">
+
+  
+  <div style="font-weight: bold;">
+    WELCOME : <span id="welcome">*</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-2">
+      <div class="card">
+        <img class="card-img-top" src="pics/435bb8e38f439739a9782d205a6fef86.jpg" alt="Card image cap">
+        <div class="card-body">
+          <a href="admin-tournaments.html" class="btn btn-primary">TOURNAMENT DETAILS</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <img class="card-img-top" src="pics/details2.jpg" alt="Card image cap" height="184">
+        <div class="card-body">
+          <a href="admin-organizers.html" class="btn btn-primary">ORGANIZER DETAILS</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <img class="card-img-top" src="pics/playerr.jpg" alt="Card image cap" height="204">
+        <div class="card-body">
+          <a href="admin-players.html" class="btn btn-primary">PLAYER DETAILS</a>
+        </div>
+      </div>
+    </div>
+   
+    <div class="col-md-2">
+      <div class="card">
+        <img class="card-img-top" src="pics/userr.jpg" alt="Card image cap" height="204">
+        <div class="card-body">
+          <a href="admin-useres-console.html" class="btn btn-primary"> USERS CONSOLE</a>
+        </div>
+      </div>
+    </div>
+     <div class="col-md-2">
+      <div class="card">
+        <img class="card-img-top" src="pics/logout-icon-template-black-color-editable-log-out-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg" alt="Card image cap" height="204">
+        <div class="card-body">
+          <!-- <a href="" class="btn btn-primary" onclick="doLogout();">LOGOUT</a> -->
+           <button class="btn btn-primary" type="button" onclick="doLogout()">LOGOUT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

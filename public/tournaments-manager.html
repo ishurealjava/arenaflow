@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+      var mymodule = angular.module("kuchModule", []);
+
+      mymodule.controller("kuchController", function ($scope, $http) {
+        $scope.jsonArray = [];
+          $scope.selcity;
+            $scope.selsports;
+
+
+
+        $scope.doFetchAll = function () {
+         var url = "/do-fetch-all-tour?kuchcity=" + $scope.selcity + "&kuchsports=" + $scope.selsports;
+
+
+                $http.get(url).then(allGoodFx, someBadFx);
+
+                function allGoodFx(response) {
+
+
+                    //resp in JSON array
+                     //alert(JSON.stringify(response.data));
+                    $scope.jsonArray = response.data;
+                }
+
+                function someBadFx(response) {
+                    alert(JSON.stringify(response.data));
+                }
+            }
+
+        //----------------------
+        
+
+      
+        //==================================================
+        $scope.cities=[{}];
+  $scope.doFetchAllCities = function () {
+                var url = "/do-fetch-all-cities";
+
+                $http.get(url).then(allGoodFx, someBadFx);
+                function allGoodFx(response) {
+                    //resp in JSON array
+                   // alert(JSON.stringify(response.data));
+                    $scope.cities = response.data;
+                }
+
+                function someBadFx(response) {
+                    alert(JSON.stringify(response.data));
+                }
+            };
+
+            //==================================================
+            $scope.oneRecord = {};
+            $scope.doShowDetails = function (index) {
+                //alert(JSON.stringify($scope.jsonArray[index]))
+                $scope.oneRecord = $scope.jsonArray[index];
+
+            }
+        });
+
+    </script>
+       
+</head>
+<body ng-app="kuchModule" ng-controller="kuchController" ng-init="doFetchAllCities();">
+
+  
+   <div class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2">
+  <img src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Arena Logo" width="40" height="40" class="me-2">
+  <span class="fw-bold fs-5">ARENA FLOW</span>
+</div>
+        </div>
+        <div class="container mt-4">
+        <div class="row ">
+            <div class="col-md-8 offset-md-2 bg-danger text-white" >
+                <center><h2>POSTED TOURNAMENTS</h2></center>
+            </div>
+        </div>
+
+    <div class="card mt-3">
+      <div class="card-body">
+        <form class="row g-3" method="post" enctype="multipart/form-data">
+          <div class="col-md-4">
+            <label for="sports" class="form-label">Select Sport</label>
+            <select id="sports" name="sports" ng-model="selsports" class="form-control">
+              <option value="">Select</option>
+              <option value="cricket">Cricket</option>
+              <option value="hockey">Hockey</option>
+              <option value="badminton">Badminton</option>
+              <option value="tennis">Tennis</option>
+              <option value="basketball">Basketball</option>
+              <option value="volleyball">Volleyball</option>
+              <option value="kabaddi">Kabaddi</option>
+              <option value="football">Football</option>
+              <option value="baseball">Baseball</option>
+              <option value="boxing">Boxing</option>
+              <option value="shooting">Shooting</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+  <label for="city" class="form-label">Select City</label>
+  <select id="city" name="city" ng-model="selcity" class="form-control">
+    <option value="">Select</option>
+    <option ng-repeat="obj in cities" value="{{obj.city}}">{{obj.city}}</option>
+  </select>
+</div>
+          
+            <div class="col-md-4 d-flex align-items-end">
+            <input type="button" class="btn btn-danger w-100" value="Fetch Tournaments" ng-click="doFetchAll();">
+          </div>
+        </form>
+        <div class="table-responsive mt-4">
+          <table class="table">
+            <thead class="table-light">
+              <tr>
+                <th>Sr.No</th>
+                <th>Event Name</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Sport</th>
+                <th>Min Age</th>
+                <th>Max Age</th>
+                <th>Last Date</th>
+                <th>Fee</th>
+                <th>Prize</th>
+                <th>Contact</th>
+                <!-- <th>Picture</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="obj in jsonArray">
+                <td>{{$index + 1}}</td>
+                <td>{{obj.eventss}}</td>
+                <td>{{obj.doe}}</td>
+                <td>{{obj.toe}}</td>
+                <td>{{obj.address}}</td>
+                <td>{{obj.city}}</td>
+                <td>{{obj.sports}}</td>
+                <td>{{obj.minAge}} years</td>
+                <td>{{obj.maxAge}} years</td>
+                <td>{{obj.lastDate}}</td>
+                <td>₹{{obj.fee}}</td>
+                <td>{{obj.prize}}</td>
+                <td>{{obj.contact}}</td>
+                <!-- <td>
+                  <a ng-href="{{obj.picurl}}">
+                    <img ng-src="{{obj.picurl}}" width="50" height="50">
+                  </a>
+                </td> -->
+               
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+ </html>

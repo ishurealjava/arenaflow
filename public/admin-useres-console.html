@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+
+
+
+<script>
+     var mymodule = angular.module("usersModule", []);
+
+      mymodule.controller("usersController", function ($scope, $http) {
+        $scope.jsonArray = [];
+
+        $scope.doFetchAll = function () {
+          var url = "/do-fetch-all-users";
+
+         
+          $http.get(url).then(allGoodFx, someBadFx);
+          function allGoodFx(response) {
+            //resp in JSON array
+            alert(JSON.stringify(response.data));
+            $scope.jsonArray = response.data;
+          }
+
+          function someBadFx(response) {
+            alert(JSON.stringify(response.data));
+          }
+        };
+$scope.doBlockUser = function (emailid) {
+  var url = "/update-user-status";
+  var data = { emailid: emailid };
+
+  $http.post(url, data).then(function (response) {
+    alert("User blocked successfully!");
+    $scope.doFetchAll(); // Refresh list
+  }, function (response) {
+    alert("Error blocking user: " + JSON.stringify(response.data));
+  });
+};
+$scope.doResumeUser = function (emailid) {
+  var url = "/resume-user-status";
+  var data = { emailid: emailid };
+
+  $http.post(url, data).then(function (response) {
+    alert("User resumed successfully!");
+    $scope.doFetchAll(); // Refresh the list
+  }, function (response) {
+    alert("Error resuming user: " + JSON.stringify(response.data));
+  });
+};
+        })
+    </script>
+    
+    </head>
+<body ng-app="usersModule" ng-controller="usersController">
+ <div class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2">
+  <img src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Arena Logo" width="40" height="40" class="me-2">
+  <span class="fw-bold fs-5">ARENA FLOW</span>
+</div>
+        <div class="container mt-4">
+        <div class="row ">
+            <div class="col-md-8 offset-md-2 bg-danger text-white" >
+                <center><h2>USERS ADMIN CONSOLE</h2></center>
+            </div>
+        </div>
+        
+<div class="card">
+  <div class="card-body">
+    <form class="row g-3 " method="post" enctype="multipart/form-data">
+                    <!-- <div class="col-md-6"> -->
+                <!-- <label for="emailid" class="form-label">Email</label> -->
+                <!-- <input type="email" class="form" ng-model="emailid" value="" name="emailid"></div> -->
+                <div class="col-md-3 d-flex align-items-end">
+                <input  type="button"  class="btn btn-danger w-100 "value="Fetch" ng-click="doFetchAll();"></div>
+                </form>
+    <div class="table-responsive">
+  <table class="table">
+ <thead>
+  <tr>
+    <th scope="col">Sr.No</th>
+    <th scope="col">Emailid</th>
+    <th scope="col">User Type</th>
+    <th scope="col">Status</th>
+    <th scope="col">Operations</th>
+  </tr>
+</thead>
+ <tr ng-repeat="obj in jsonArray">
+  <td>{{$index + 1}}</td>
+  <td>{{obj.emailid}}</td>
+  <td>{{obj.utype}}</td>
+  <td>{{obj.status}}</td>
+  <td>
+    <button ng-click="doResumeUser(obj.emailid)" class="btn btn-success btn-sm">RESUME</button>
+    <button ng-click="doBlockUser(obj.emailid)" class="btn btn-danger btn-sm">BLOCK</button>
+  </td>
+</tr>
+</table>
+</div>
+</div> 
+</body>
+ </html>

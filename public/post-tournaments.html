@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+    </script>
+    
+
+
+
+<script>
+    $(document).ready(function(){
+  $("#sendBtn").click(function(event){
+    event.preventDefault();
+
+    let obj = {
+      type: "POST",
+      url: "/postTour", 
+      data: {
+        emailid: $("#emailid").val(),
+        eventss: $("#eventss").val(),
+        doe: $("#doe").val(),
+        toe: $("#toe").val(),
+        address: $("#address").val(),
+        city: $("#city").val(),
+        sports: $("#sports").val(),
+        minAge: $("#minAge").val(),
+        maxAge: $("#maxAge").val(),
+        lastDate: $("#lastDate").val(),
+        fee: $("#fee").val(),
+        prize: $("#prize").val(),
+        contact: $("#contact").val()
+      }
+    };
+
+    $.ajax(obj).then(function(response){
+      alert(response); 
+    }).fail(function(err){
+      alert("Error: " + err.responseText); 
+    });
+  });
+});
+</script>
+<script>
+      function showUser()
+      {
+        let activeUser=localStorage.getItem("activeUser");
+        document.getElementById("emailid").value=activeUser;
+      }
+    </script>
+     
+</head>
+<body onload="showUser();">
+  <div class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2">
+  <img src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Arena Logo" width="40" height="40" class="me-2">
+  <span class="fw-bold fs-5">ARENA FLOW</span>
+</div>
+    <div class="container mt-4">
+        <div class="row ">
+            <div class="col-md-8 offset-md-2 bg-danger text-white" >
+                <center><h2>TOURNAMENTS-DASH</h2></center>
+            </div>
+        </div>
+
+     <div class="col-md-8 offset-md-2">
+
+      <form class="row g-1" id="/tourForm"  method="post" >
+       <div class="col-md-6">
+          <label for="emailid" class="form-label">Email</label>
+          <input type="email" class="form-control " name="emailid" id="emailid" readonly />
+        </div>
+       
+       <div class="col-md-6">
+          <label for="eventss" class="form-label">Event Title</label>
+          <input type="text" class="form-control" name="eventss" id="eventss" />
+        </div>
+        <div class="col-md-6">
+          <label for="doe" class="form-label">Date</label>
+          <input type="date" class="form-control" name="doe" id="doe" />
+        </div>
+        <div class="col-md-6">
+          <label for="toe" class="form-label">Time</label>
+          <input type="time" class="form-control" name="toe" id="toe" />
+        </div>
+        
+        <div class="col-8">
+          <label for="address" class="form-label">Address</label>
+          <input
+            type="text"
+            class="form-control"
+            id="address"
+            name="address"
+
+          />
+        </div>
+        <div class="col-4">
+          <label for="city" class="form-label">City</label>
+          <input
+            type="text"
+            class="form-control"
+            id="city"
+            name="city"
+            ng-model="selcity"
+          />
+        </div>
+         <div class="mb-3">
+          <label for="sports" class="form-label">Sports Category</label>
+          <select id="sports" name="sports" ng-model="selsports">
+            <option value="none">Select</option>
+            <option value="cricket">Cricket</option>
+            <option value="hockey">Hockey</option>
+            <option value="badminton">Badminton</option>
+            <option value="tennis">Tennis</option>
+            <option value="basketball">Basketball</option>
+            <option value="volleyball">Volleyball</option>
+            <option value="kabaddi">Kabaddi</option>
+            <option value="football">Football</option>
+            <option value="baseball">Baseball</option>
+            <option value="boxing">Boxing</option>
+            <option value="shooting">Shooting</option>
+          </select>
+          
+         
+          </div>
+           <div class="col-md-4">
+          <label for="minAge" class="form-label">Min Age</label>
+          <input type="number" class="form-control"name="minAge" id="minAge" />
+        </div>
+        <div class="col-md-4">
+          <label for="maxAge" class="form-label">Max Age</label>
+          <input type="number" class="form-control" name="maxAge"id="maxAge" />
+        </div>
+        <div class="col-md-4">
+          <label for="lastDate" class="form-label">Last Date of Registration </label>
+          <input type="date" class="form-control"name="lastDate" id="lastDate" />
+        </div>
+        <div class="col-md-4">
+          <label for="fee" class="form-label">Fee</label>
+          <input type="number" class="form-control" id="fee" name="fee" />
+        </div>
+         <div class="col-md-4">
+          <label for="prize" class="form-label">Prize Money</label>
+          <input type="number" class="form-control" id="prize" name="prize" />
+        </div>
+        <div class="col-md-12">
+          <label for="contact" class="form-label">Contact Person</label>
+          <input type="text" class="form-control" name="contact"id="contact" />
+        </div>
+    <div class="col-6">
+  <button type="button" class="btn btn-primary" id="sendBtn" value="send">Publish Event</button>
+</div>
+</form>
+</div>
+</div>
+</div>   
+</body>
+</html>

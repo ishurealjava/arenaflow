@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+      <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"/>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-pH6hODig79uPVU1P3yc6Ak2anoxNxbqvHxQh9jT8UBnEknZHoZ2ND5MgxDYOdxrT" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script>
+  $(document).ready(function () {
+    $("#changePwdForm").submit(function (e) {
+      e.preventDefault();
+
+      let obj = {
+        type: "POST",
+        url: "/update-password",
+        data: {
+          emailid: $("#changeEmail").val(),
+          oldPwd: $("#oldPwd").val(),
+          newPwd: $("#newPwd").val()
+        }
+      };
+
+      $.ajax(obj).then(function (response) {
+        alert(response); 
+      }).fail(function (err) {
+        alert("Error: " + err.responseText);
+      });
+    });
+  });
+</script>
+
+<script>
+      function showUser()
+      {
+        let activeUser=localStorage.getItem("activeUser");
+        document.getElementById("welcome").innerHTML=activeUser;
+      }
+    </script>
+    <script>
+      function doLogout(){
+
+        localStorage.removeItem("activeUser");
+        location.href="index.html";
+      }
+    </script>
+</head>
+<body onload="showUser();">
+  <div class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2">
+  
+  <img src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Arena Logo" width="40" height="40">
+
+  
+  <div style="font-weight: bold;">
+    WELCOME : <span id="welcome">*</span>
+  </div>
+</div>
+  <!-- <div class="row " >
+            <div class="col-md-12  bg-primary text-white" style="padding:10px 0px 10px 0px;">
+                www.realSports.com
+            </div>
+        </div>
+        <div style="position: absolute; top: 0; right: 0; color: white; padding: 10px; font-weight: bold;">
+WELCOME : <span id="welcome">*</span>
+</div> -->
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-6 col-md-3 d-flex">
+      <div class="card" style="width: 100%; margin-bottom: 15px;">
+        <img class="card-img-top" src="pics/business-avatar-profile-black-icon-man-of-user-symbol-in-trendy-flat-style-isolated-on-male-profile-people-diverse-face-for-social-network-or-web-vector.jpg" alt="Card image cap">
+        <div class="card-body">
+          <a href="profile-player.html" class="btn btn-primary">PROFILE</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3 d-flex">
+      <div class="card" style="width: 100%; margin-bottom: 15px;">
+        <img class="card-img-top" src="pics/logo-for-sporting-event-with-a-man-running-vector.jpg" alt="Card image cap">
+        <div class="card-body">
+          <a href="tournaments-manager.html" class="btn btn-primary">EXPLORE EVENTS</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3 d-flex">
+  <div class="card" style="width: 100%; margin-bottom: 15px;">
+    <img class="card-img-top" src="pics/SETTINGS.jpg" alt="Card image cap">
+    <div class="card-body">
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#settingsModal">
+        SETTINGS
+      </button>
+    </div>
+  </div>
+</div>
+
+    <div class="col-12 col-sm-6 col-md-3 d-flex">
+      <div class="card" style="width: 100%; margin-bottom: 15px;">
+        <img class="card-img-top" src="pics/logout-icon-template-black-color-editable-log-out-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg" alt="Card image cap">
+        <div class="card-body">
+          <!-- <a href="" class="btn btn-primary" onclick="doLogout();">LOGOUT</a> -->
+           <button class="btn btn-primary" type="button" onclick="doLogout()">LOGOUT</button>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="settingsLabel">Settings Panel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form id="changePwdForm">
+  <div class="mb-3">
+    <label for="changeEmail" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="changeEmail" required >
+  </div>
+
+  <div class="mb-3">
+    <label for="oldPwd" class="form-label">Old Password</label>
+    <input type="password" class="form-control" id="oldPwd" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="newPwd" class="form-label">New Password</label>
+    <input type="password" class="form-control" id="newPwd" required>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <input type="submit" class="btn btn-primary" value="Save Changes">
+  </div>
+</form>
+        
+    </div>
+  </div>
+</div>
+</body>
+</html>
